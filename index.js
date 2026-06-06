@@ -4,7 +4,12 @@ app.use(express.json());
 
 // Vérification de version → on dit que tout est OK
 app.get('/api/version', (req, res) => {
-  res.json({ status: 'ok', updateRequired: false });
+  res.json({ 
+    isUpToDate: true,
+    updateRequired: false,
+    minimumVersion: '0.0.0',
+    currentVersion: '99.99.99'
+  });
 });
 
 // Auth → on renvoie un faux token
