@@ -2,33 +2,22 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 
-// Vérification de version → on dit que tout est OK
-app.get('/api/version', (req, res) => {
-  res.json({ 
-    isUpToDate: true,
-    updateRequired: false,
-    minimumVersion: '0.0.0',
-    currentVersion: '99.99.99'
-  });
+// Log toutes les requêtes en détail
+app.use((req, res, next) => {
+  console.log('=== REQUETE ===');
+  console.log('Method:', req.method);
+  console.log('Path:', req.path);
+  console.log('Headers:', JSON.stringify(req.headers, null, 2));
+  console.log('Body:', JSON.stringify(req.body, null, 2));
+  console.log('===============');
+  next();
 });
 
-// Auth → on renvoie un faux token
-app.post('/api/auth/login', (req, res) => {
-  res.json({ token: 'fake-token-reborn', playerId: 1, username: 'Player' });
-});
-
-// Telemetry/analytics → on accepte et on ignore
-app.post('/data/events', (req, res) => {
-  res.status(200).json({ status: 'ok' });
-});
-
-// Tout le reste → on répond OK pour ne pas bloquer le jeu
 app.use((req, res) => {
-  console.log('Requête reçue:', req.method, req.path);
-  res.status(200).json({ status: 'ok' });
+  res.status(200).json({ status: 'ok', isUpToDate: true, updateRequired: false });
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log('Serveur RecRoom démarré sur le port ' + PORT);
+  console.log('Serveur démarré sur le port ' + PORT);
 });
